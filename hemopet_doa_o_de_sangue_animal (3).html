@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEMOPET - Doação de Sangue Animal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hemopet: {
+                            50: '#fdf2f2',
+                            100: '#fde8e8',
+                            200: '#fbd5d5',
+                            500: '#d92525',
+                            600: '#b31924',
+                            700: '#9a131b',
+                            800: '#7d0f16',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fce8e8; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Simulation of mobile device container */
+        .mobile-frame {
+            max-width: 440px;
+            height: 92vh;
+            max-height: 880px;
+        }
+    </style>
+</head>
+<body class="bg-[#fce8e8] text-gray-800 flex flex-col items-center justify-center min-h-screen p-0 sm:p-4">
+
+    <!-- Top banner text required -->
+    <div class="w-full bg-[#9a131b] text-white text-[11px] sm:text-xs text-center py-1 px-2 font-medium tracking-wide shadow-sm">
+        este aplicativo foi criado com muito carinho para salvar vidas
+    </div>
+
+    <div class="w-full mobile-frame bg-white sm:rounded-[36px] shadow-2xl flex flex-col relative overflow-hidden border-0 sm:border-8 sm:border-gray-900">
+        
+        <!-- Dynamic Header (StatusBar simulated) -->
+        <div class="bg-[#b31924] text-white px-6 pt-3 pb-4 rounded-b-[24px] shadow-md relative z-20 flex flex-col justify-between">
+            <div class="flex justify-between items-center text-xs opacity-90 mb-2">
+                <span id="current-time">9:41</span>
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-signal"></i>
+                    <i class="fa-solid fa-wifi"></i>
+                    <i class="fa-solid fa-battery-full"></i>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-white text-[#b31924] rounded-full p-1.5 w-9 h-9 flex items-center justify-center shadow">
+                        <i class="fa-solid fa-paw text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg tracking-tight leading-tight">Hemopet*</h1>
+                        <p class="text-[10px] text-red-100 font-medium tracking-wider uppercase">Doação de Sangue Animal</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openAlertModal()" title="Emitir Alerta Veterinário" class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-full text-xs transition relative" id="alert-bell-btn">
+                        <i class="fa-solid fa-bell text-sm"></i>
+                        <span id="alert-badge" class="absolute -top-1 -right-1 bg-yellow-400 text-gray-900 font-bold text-[9px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button onclick="switchTab('profile')" class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-full text-xs transition">
+                        <i class="fa-solid fa-user-gear text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Scrollable Area -->
+        <div id="main-content" class="flex-1 overflow-y-auto hide-scrollbar pb-20 bg-gray-50 relative">
+            
+            <!-- VIEW: WELCOME / AUTH SCREEN -->
+            <div id="view-welcome" class="p-6 flex flex-col items-center justify-center min-h-full text-center bg-gradient-to-b from-[#fdf2f2] to-white">
+                <div class="my-4 relative">
+                    <div class="absolute -inset-1 bg-red-200 rounded-full blur opacity-70"></div>
+                    <div class="relative bg-white p-6 rounded-full shadow-lg border-2 border-red-100">
+                        <i class="fa-solid fa-hand-holding-medical text-6xl text-[#b31924]"></i>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-black text-gray-900 mt-2">Juntos, podemos salvar mais vidas!</h2>
+                <p class="text-xs text-gray-600 mt-2 max-w-xs leading-relaxed">
+                    Conectando tutores, animais doadores e clínicas veterinárias. Porque toda vida importa!
+                </p>
+                <div class="bg-red-50 border border-red-100 p-3 rounded-2xl my-5 w-full text-left">
+                    <p class="text-xs font-semibold text-[#b31924] flex items-center">
+                        <i class="fa-solid fa-heart mr-1.5"></i> Cada doação vale uma vida!
+                    </p>
+                    <p class="text-[11px] text-gray-600 mt-0.5">Cadastre seu pet, encontre clínicas ou cadastre-se como parceiro.</p>
+                </div>
+
+                <div class="w-full space-y-3 mt-2">
+                    <button onclick="switchTab('home')" class="w-full bg-[#b31924] hover:bg-[#9a131b] text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg transition flex items-center justify-center space-x-2 text-sm">
+                        <i class="fa-solid fa-rocket mr-1"></i>
+                        <span>Entrar no Aplicativo</span>
+                    </button>
+                    <button onclick="openRoleSelectorModal()" class="w-full bg-white hover:bg-gray-50 text-[#b31924] border-2 border-[#b31924] font-bold py-3 px-6 rounded-2xl transition flex items-center justify-center space-x-2 text-sm">
+                        <i class="fa-solid fa-user-plus mr-1"></i>
+                        <span>Cadastrar Novo Perfil</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW: HOME (DASHBOARD) -->
+            <div id="view-home" class="p-4 space-y-4 hidden">
+                <!-- Banner Welcome User -->
+                <div class="bg-gradient-to-r from-red-600 to-[#9a131b] rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
+                    <div class="absolute right-0 bottom-0 opacity-15 transform translate-x-3 translate-y-3">
+                        <i class="fa-solid fa-dog text-9xl"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <span class="bg-white/20 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">Painel Hemopet</span>
+                        <h3 id="welcome-user-name" class="text-lg font-bold mt-1">Olá, Bem-vindo(a)!</h3>
+                        <p class="text-xs text-red-100 mt-0.5">Sua atitude pode salvar um pet hoje.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Menu Grid -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="switchTab('pets')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hover:border-red-200 transition text-left flex flex-col justify-between group">
+                        <div class="bg-red-50 text-[#b31924] w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                            <i class="fa-solid fa-paw text-lg"></i>
+                        </div>
+                        <div class="mt-3">
+                            <span class="font-bold text-gray-800 text-sm block">Cadastrar Pet</span>
+                            <span class="text-[11px] text-gray-500">Adicione doadores</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchTab('map')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hover:border-red-200 transition text-left flex flex-col justify-between group">
+                        <div class="bg-red-50 text-[#b31924] w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                            <i class="fa-solid fa-location-dot text-lg"></i>
+                        </div>
+                        <div class="mt-3">
+                            <span class="font-bold text-gray-800 text-sm block">Clínicas Parceiras</span>
+                            <span class="text-[11px] text-gray-500">Mapa e rotas</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchTab('points')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hover:border-red-200 transition text-left flex flex-col justify-between group">
+                        <div class="bg-red-50 text-[#b31924] w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                            <i class="fa-solid fa-award text-lg"></i>
+                        </div>
+                        <div class="mt-3">
+                            <span class="font-bold text-gray-800 text-sm block">Meus Pontos</span>
+                            <span class="text-[11px] text-gray-500">Carteira & Selos</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchTab('rewards')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 hover:border-red-200 transition text-left flex flex-col justify-between group">
+                        <div class="bg-red-50 text-[#b31924] w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                            <i class="fa-solid fa-gift text-lg"></i>
+                        </div>
+                        <div class="mt-3">
+                            <span class="font-bold text-gray-800 text-sm block">Brindes & Prêmios</span>
+                            <span class="text-[11px] text-gray-500">Descontos e brindes</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Emergency Alerts Feed -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-gray-500 flex items-center">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1.5"></i> Alertas Urgentes Ativos
+                        </h4>
+                        <span id="alerts-count-badge" class="bg-red-100 text-[#b31924] text-[10px] font-bold px-2 py-0.5 rounded-full">0 clínicos</span>
+                    </div>
+                    <div id="home-alerts-container" class="space-y-2">
+                        <div class="text-center py-6 text-gray-400 text-xs">
+                            <i class="fa-solid fa-circle-check text-2xl mb-1 text-green-500 opacity-80"></i>
+                            <p>Nenhum alerta urgente no momento.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registered Pets Summary Feed -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-gray-500 flex items-center">
+                            <i class="fa-solid fa-dog text-[#b31924] mr-1.5"></i> Meus Animais Doadores
+                        </h4>
+                        <button onclick="switchTab('pets')" class="text-xs font-semibold text-[#b31924] hover:underline">+ Adicionar</button>
+                    </div>
+                    <div id="home-pets-container" class="space-y-2">
+                        <div class="text-center py-6 text-gray-400 text-xs">
+                            <p>Nenhum pet cadastrado ainda.</p>
+                            <button onclick="switchTab('pets')" class="mt-2 text-xs font-bold text-[#b31924] bg-red-50 px-3 py-1.5 rounded-xl border border-red-100">Cadastrar Primeiro Pet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: PETS & TUTOR MANAGEMENT -->
+            <div id="view-pets" class="p-4 space-y-4 hidden">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-base text-gray-900">Cadastro do Pet & Tutor</h3>
+                        <p class="text-xs text-gray-500">Gerencie seus doadores voluntários</p>
+                    </div>
+                    <button onclick="openPetModal()" class="bg-[#b31924] text-white text-xs font-bold px-3 py-2 rounded-xl shadow-sm flex items-center space-x-1">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Novo Pet</span>
+                    </button>
+                </div>
+
+                <!-- Registered Pets List -->
+                <div id="pets-list-container" class="space-y-3">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <!-- Quick Tutor Info card -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-gray-500">Dados do Tutor Responsável</h4>
+                        <button onclick="switchTab('profile')" class="text-xs text-[#b31924] font-semibold">Editar Perfil</button>
+                    </div>
+                    <div id="tutor-summary-card" class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center text-gray-500 font-bold" id="tutor-avatar-mini">
+                            <i class="fa-solid fa-user text-lg"></i>
+                        </div>
+                        <div>
+                            <p id="tutor-display-name" class="font-bold text-sm text-gray-800">Nenhum tutor cadastrado</p>
+                            <p id="tutor-display-location" class="text-xs text-gray-500">Clique em perfil para preencher seus dados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: MAP & CLINICS -->
+            <div id="view-map" class="p-4 space-y-4 hidden">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-base text-gray-900">Clínicas Parceiras</h3>
+                        <p class="text-xs text-gray-500">Encontre locais de coleta e veterinários</p>
+                    </div>
+                    <button onclick="openClinicRegisterModal()" class="bg-[#b31924] text-white text-xs font-bold px-3 py-2 rounded-xl shadow-sm flex items-center space-x-1">
+                        <i class="fa-solid fa-hospital"></i>
+                        <span>Sou Veterinário</span>
+                    </button>
+                </div>
+
+                <!-- Search & Filters -->
+                <div class="relative">
+                    <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-400 text-xs"></i>
+                    <input type="text" id="clinic-search-input" onkeyup="filterClinics()" placeholder="Buscar clínica por nome ou região..." class="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#b31924]">
+                </div>
+
+                <div class="flex space-x-2 overflow-x-auto pb-1 hide-scrollbar">
+                    <button onclick="setClinicFilter('all')" id="filter-all" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#b31924] text-white whitespace-nowrap">Todas</button>
+                    <button onclick="setClinicFilter('donation')" id="filter-donation" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-gray-600 border border-gray-200 whitespace-nowrap">Com coleta de sangue</button>
+                    <button onclick="setClinicFilter('partner')" id="filter-partner" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-gray-600 border border-gray-200 whitespace-nowrap">Clínicas Parceiras</button>
+                </div>
+
+                <!-- Simulated Map Box -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="bg-red-600 text-white p-2 rounded-xl">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-xs text-gray-800">Radar Hemopet Ativo</p>
+                            <p class="text-[10px] text-gray-600">Exibindo clínicas cadastradas na sua região</p>
+                        </div>
+                    </div>
+                    <span class="bg-red-100 text-[#b31924] text-[10px] font-extrabold px-2 py-1 rounded-lg animate-pulse">GPS Ativo</span>
+                </div>
+
+                <!-- Clinics List -->
+                <div id="clinics-list-container" class="space-y-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- VIEW: POINTS & WALLET -->
+            <div id="view-points" class="p-4 space-y-4 hidden">
+                <!-- Points Card Header -->
+                <div class="bg-gradient-to-br from-[#b31924] to-[#7d0f16] rounded-2xl p-5 text-white shadow-md relative overflow-hidden text-center">
+                    <div class="absolute -right-6 -bottom-6 opacity-10 text-9xl">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-red-200 bg-white/10 px-3 py-1 rounded-full">Minha Carteira</span>
+                    <h3 class="text-3xl font-black mt-2" id="user-points-total">0</h3>
+                    <p class="text-xs text-red-100 font-medium">Seus pontos acumulados</p>
+
+                    <!-- Level Progress Bar -->
+                    <div class="mt-4 pt-3 border-t border-white/20 text-left">
+                        <div class="flex justify-between text-[11px] mb-1 font-semibold">
+                            <span id="user-level-name">Iniciante</span>
+                            <span id="next-level-target">Próx: 100 pts</span>
+                        </div>
+                        <div class="w-full bg-black/20 rounded-full h-2 overflow-hidden">
+                            <div id="points-progress-bar" class="bg-yellow-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Badges & Recognition -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3 flex items-center">
+                        <i class="fa-solid fa-medal text-yellow-500 mr-1.5"></i> Selos & Reconhecimento
+                    </h4>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex flex-col items-center">
+                            <div id="badge-doador" class="w-10 h-10 rounded-full bg-red-100 text-[#b31924] flex items-center justify-center mb-1.5 opacity-40">
+                                <i class="fa-solid fa-hand-holding-droplet"></i>
+                            </div>
+                            <span class="font-bold text-[11px] text-gray-800">Doador</span>
+                            <span class="text-[9px] text-gray-400">1+ Doações</span>
+                        </div>
+                        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex flex-col items-center">
+                            <div id="badge-solidario" class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-1.5 opacity-40">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <span class="font-bold text-[11px] text-gray-800">Solidário</span>
+                            <span class="text-[9px] text-gray-400">50+ Pontos</span>
+                        </div>
+                        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex flex-col items-center">
+                            <div id="badge-heroi" class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mb-1.5 opacity-40">
+                                <i class="fa-solid fa-crown"></i>
+                            </div>
+                            <span class="font-bold text-[11px] text-gray-800">Pet Herói</span>
+                            <span class="text-[9px] text-gray-400">200+ Pontos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Points History -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-gray-500">Histórico de Doações e Pontos</h4>
+                        <button onclick="simulateDonationReward()" class="text-xs font-bold text-white bg-[#b31924] hover:bg-[#9a131b] px-2.5 py-1 rounded-lg transition">Simular Doação (+100 pts)</button>
+                    </div>
+                    <div id="points-history-container" class="space-y-2.5">
+                        <div class="text-center py-6 text-gray-400 text-xs">
+                            <p>Nenhuma doação registrada ainda.</p>
+                            <p class="text-[10px] text-gray-400 mt-1">Simule uma doação acima para testar os pontos!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: REWARDS & PARTNERS -->
+            <div id="view-rewards" class="p-4 space-y-4 hidden">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-base text-gray-900">Brindes e Benefícios</h3>
+                        <p class="text-xs text-gray-500">Troque seus pontos por prêmios incríveis</p>
+                    </div>
+                    <button onclick="openPartnerRegisterModal()" class="bg-[#b31924] text-white text-xs font-bold px-3 py-2 rounded-xl shadow-sm flex items-center space-x-1">
+                        <i class="fa-solid fa-handshake"></i>
+                        <span>Seja Parceiro</span>
+                    </button>
+                </div>
+
+                <!-- Tabs inside rewards -->
+                <div class="flex space-x-2 border-b border-gray-200 pb-2 overflow-x-auto hide-scrollbar">
+                    <button onclick="setRewardTab('pets')" id="tab-rew-pets" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#b31924] text-white">Brindes para Pets</button>
+                    <button onclick="setRewardTab('discounts')" id="tab-rew-discounts" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-white text-gray-600 border border-gray-200">Descontos Parceiros</button>
+                    <button onclick="setRewardTab('partners-list')" id="tab-rew-partners" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-white text-gray-600 border border-gray-200">Empresas Parceiras</button>
+                </div>
+
+                <!-- Reward Catalog Grid -->
+                <div id="rewards-grid-container" class="grid grid-cols-2 gap-3">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Partners List Container -->
+                <div id="partners-list-container" class="space-y-3 hidden">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- VIEW: PROFILE & SETTINGS -->
+            <div id="view-profile" class="p-4 space-y-4 hidden">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center relative">
+                    <div class="absolute top-3 right-3">
+                        <button onclick="openEditUserModal()" class="text-gray-400 hover:text-[#b31924] p-1.5 rounded-lg bg-gray-50"><i class="fa-solid fa-pen text-sm"></i></button>
+                    </div>
+                    <div class="w-20 h-20 bg-gray-100 rounded-full mx-auto overflow-hidden flex items-center justify-center border-2 border-red-100 shadow-sm mb-3" id="profile-avatar-box">
+                        <i class="fa-solid fa-user text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 id="profile-name-text" class="font-bold text-base text-gray-900">Usuário não cadastrado</h3>
+                    <p id="profile-role-text" class="text-xs text-red-600 font-semibold mt-0.5">Tutor(a) / Visitante</p>
+                    <p id="profile-location-text" class="text-xs text-gray-500 mt-1"><i class="fa-solid fa-location-dot mr-1"></i> Informe sua localização</p>
+                </div>
+
+                <!-- Menu options list -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100 text-xs">
+                    <button onclick="switchTab('pets')" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition text-left">
+                        <span class="flex items-center font-semibold text-gray-800"><i class="fa-solid fa-paw text-[#b31924] mr-3 w-5"></i> Meus Pets Cadastrados</span>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </button>
+                    <button onclick="switchTab('points')" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition text-left">
+                        <span class="flex items-center font-semibold text-gray-800"><i class="fa-solid fa-award text-[#b31924] mr-3 w-5"></i> Minha Carteira de Pontos</span>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </button>
+                    <button onclick="openEditUserModal()" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition text-left">
+                        <span class="flex items-center font-semibold text-gray-800"><i class="fa-solid fa-user-pen text-[#b31924] mr-3 w-5"></i> Configurações & Editar Perfil</span>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </button>
+                    <button onclick="openRoleSelectorModal()" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition text-left">
+                        <span class="flex items-center font-semibold text-gray-800"><i class="fa-solid fa-users-gear text-[#b31924] mr-3 w-5"></i> Alterar Tipo de Cadastro (Tutor / Vet / Parceiro)</span>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </button>
+                    <button onclick="showInfoModal('Suporte Hemopet', 'Precisa de ajuda ou tem dúvidas sobre a doação de sangue animal? Entre em contato conosco pelo e-mail contato@hemopet.org ou pelo telefone (11) 98888-7777.')" class="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition text-left">
+                        <span class="flex items-center font-semibold text-gray-800"><i class="fa-solid fa-circle-question text-[#b31924] mr-3 w-5"></i> Suporte & Informações</span>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Tab Navigation -->
+        <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-3 py-2 flex justify-around items-center z-30 shadow-lg">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-[#b31924] transition">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] font-bold mt-0.5">Início</span>
+            </button>
+            <button onclick="switchTab('map')" id="nav-map" class="flex flex-col items-center text-gray-400 hover:text-[#b31924] transition">
+                <i class="fa-solid fa-map text-lg"></i>
+                <span class="text-[10px] font-medium mt-0.5">Mapa</span>
+            </button>
+            <button onclick="switchTab('points')" id="nav-points" class="flex flex-col items-center text-gray-400 hover:text-[#b31924] transition">
+                <i class="fa-solid fa-award text-lg"></i>
+                <span class="text-[10px] font-medium mt-0.5">Pontos</span>
+            </button>
+            <button onclick="switchTab('rewards')" id="nav-rewards" class="flex flex-col items-center text-gray-400 hover:text-[#b31924] transition">
+                <i class="fa-solid fa-gift text-lg"></i>
+                <span class="text-[10px] font-medium mt-0.5">Brindes</span>
+            </button>
+            <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-gray-400 hover:text-[#b31924] transition">
+                <i class="fa-solid fa-user text-lg"></i>
+                <span class="text-[10px] font-medium mt-0.5">Perfil</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- MODAL CONTAINER -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        
+        <!-- ROLE SELECTOR / REGISTRATION TYPE MODAL -->
+        <div id="modal-role-selector" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4 relative animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex justify-between items-center">
+                <h3 class="font-extrabold text-lg text-gray-900">Como você deseja se cadastrar?</h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-gray-600">Escolha seu perfil para personalizar sua experiência no Hemopet:</p>
+            
+            <div class="space-y-2.5">
+                <button onclick="selectRole('tutor')" class="w-full text-left p-3.5 rounded-2xl border-2 border-red-100 hover:border-[#b31924] bg-red-50/50 transition flex items-center space-x-3 group">
+                    <div class="bg-[#b31924] text-white p-3 rounded-xl"><i class="fa-solid fa-user text-base"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-900 group-hover:text-[#b31924]">Tutor de Pet Doador</h4>
+                        <p class="text-[11px] text-gray-500">Cadastre seus animais e acumule pontos</p>
+                    </div>
+                </button>
+
+                <button onclick="selectRole('vet')" class="w-full text-left p-3.5 rounded-2xl border-2 border-red-100 hover:border-[#b31924] bg-red-50/50 transition flex items-center space-x-3 group">
+                    <div class="bg-[#b31924] text-white p-3 rounded-xl"><i class="fa-solid fa-hospital text-base"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-900 group-hover:text-[#b31924]">Veterinário / Clínica</h4>
+                        <p class="text-[11px] text-gray-500">Cadastre sua clínica e emita alertas de doação</p>
+                    </div>
+                </button>
+
+                <button onclick="selectRole('partner')" class="w-full text-left p-3.5 rounded-2xl border-2 border-red-100 hover:border-[#b31924] bg-red-50/50 transition flex items-center space-x-3 group">
+                    <div class="bg-[#b31924] text-white p-3 rounded-xl"><i class="fa-solid fa-handshake text-base"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-900 group-hover:text-[#b31924]">Empresa Parceira</h4>
+                        <p class="text-[11px] text-gray-500">Pet shops, banho & tosa, ofereça descontos</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- USER / TUTOR EDIT MODAL -->
+        <div id="modal-user-edit" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 id="user-modal-title" class="font-extrabold text-base text-gray-900">Cadastro de Usuário</h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form id="form-user-edit" onsubmit="saveUserProfile(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Nome Completo / Instituição *</label>
+                    <input type="text" id="inp-user-name" required placeholder="Ex: Ana Silva" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Documento (CPF/CNPJ) *</label>
+                        <input type="text" id="inp-user-doc" required placeholder="000.000.000-00" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Telefone / WhatsApp *</label>
+                        <input type="text" id="inp-user-phone" required placeholder="(11) 99999-9999" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div id="vet-specific-fields" class="hidden space-y-3 bg-red-50 p-3 rounded-xl border border-red-100">
+                    <div>
+                        <label class="block font-bold text-red-900 mb-1">CRMV / Certificado de Atuação *</label>
+                        <input type="text" id="inp-user-crmv" placeholder="CRMV-SP 12345" class="w-full p-2.5 bg-white border border-red-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Cidade *</label>
+                        <input type="text" id="inp-user-city" required placeholder="São Paulo - SP" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Endereço *</label>
+                        <input type="text" id="inp-user-address" required placeholder="Av. das Flores, 123" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">URL da Foto de Perfil (Opcional)</label>
+                    <input type="url" id="inp-user-photo" placeholder="https://exemplo.com/foto.jpg" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+
+                <button type="submit" class="w-full bg-[#b31924] hover:bg-[#9a131b] text-white font-bold py-3 rounded-xl shadow mt-2">Salvar Cadastro</button>
+            </form>
+        </div>
+
+        <!-- PET REGISTRATION MODAL -->
+        <div id="modal-pet-edit" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="font-extrabold text-base text-gray-900">Cadastro do Pet Doador</h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form id="form-pet-edit" onsubmit="savePetData(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Nome do Pet *</label>
+                    <input type="text" id="inp-pet-name" required placeholder="Ex: Toby ou Mel" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Espécie *</label>
+                        <select id="inp-pet-species" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                            <option value="Cão">Cão (Canino)</option>
+                            <option value="Gato">Gato (Felino)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Raça *</label>
+                        <input type="text" id="inp-pet-breed" required placeholder="Ex: Golden / SRD" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Idade *</label>
+                        <input type="text" id="inp-pet-age" required placeholder="Ex: 3 anos" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Peso (kg) *</label>
+                        <input type="text" id="inp-pet-weight" required placeholder="Ex: 22 kg" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Tipo Sanguíneo</label>
+                        <input type="text" id="inp-pet-blood" placeholder="Ex: DEA 1.1 / A/B" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Identidade / Microchip</label>
+                        <input type="text" id="inp-pet-id" placeholder="Nº Identidade" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Foto do Pet (URL)</label>
+                    <input type="url" id="inp-pet-photo" placeholder="https://images.unsplash.com/..." class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+
+                <button type="submit" class="w-full bg-[#b31924] hover:bg-[#9a131b] text-white font-bold py-3 rounded-xl shadow mt-2">Salvar Pet Doador</button>
+            </form>
+        </div>
+
+        <!-- CLINIC REGISTRATION MODAL (FOR VETS) -->
+        <div id="modal-clinic-edit" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="font-extrabold text-base text-gray-900">Cadastrar Clínica / Veterinário</h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form id="form-clinic-edit" onsubmit="saveClinicData(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Nome da Clínica ou Veterinário *</label>
+                    <input type="text" id="inp-clinic-name" required placeholder="Ex: Hospital Veterinário Vida Pet" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">CRMV / Documento *</label>
+                        <input type="text" id="inp-clinic-doc" required placeholder="CRMV-SP 54321" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Telefone *</label>
+                        <input type="text" id="inp-clinic-phone" required placeholder="(11) 98765-4321" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Cidade *</label>
+                        <input type="text" id="inp-clinic-city" required placeholder="São Paulo - SP" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Distância / Bairro *</label>
+                        <input type="text" id="inp-clinic-dist" required placeholder="2,4 km" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Endereço Completo *</label>
+                    <input type="text" id="inp-clinic-address" required placeholder="Av. das Flores, 123 - SP" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+
+                <button type="submit" class="w-full bg-[#b31924] hover:bg-[#9a131b] text-white font-bold py-3 rounded-xl shadow mt-2">Cadastrar Clínica</button>
+            </form>
+        </div>
+
+        <!-- EMIT ALERT MODAL (FOR VETS) -->
+        <div id="modal-alert-emit" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-extrabold text-base text-gray-900 text-red-600 flex items-center">
+                    <i class="fa-solid fa-bullhorn mr-2"></i> Emitir Alerta Urgente de Doação
+                </h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form onsubmit="submitUrgentAlert(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Clínica Solicitante *</label>
+                    <input type="text" id="inp-alert-clinic" required placeholder="Ex: Hospital Vet Vida Pet" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Espécie Neces. *</label>
+                        <select id="inp-alert-species" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                            <option value="Cão (Canino)">Cão (Canino)</option>
+                            <option value="Gato (Felino)">Gato (Felino)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Tipo Sanguíneo *</label>
+                        <input type="text" id="inp-alert-blood" required placeholder="Ex: DEA 1.1 Positivo" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Mensagem Urgente / Detalhes *</label>
+                    <textarea id="inp-alert-msg" required rows="3" placeholder="Precisamos urgentemente de doador de sangue para cirurgia de emergência..." class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow mt-2">Disparar Alerta para Tutores</button>
+            </form>
+        </div>
+
+        <!-- PARTNER REGISTRATION MODAL -->
+        <div id="modal-partner-edit" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="font-extrabold text-base text-gray-900">Cadastro de Empresa Parceira</h3>
+                <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form onsubmit="savePartnerData(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Nome do Estabelecimento *</label>
+                    <input type="text" id="inp-part-name" required placeholder="Ex: Pet Love / Banho & Tosa Feliz" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Categoria *</label>
+                    <select id="inp-part-cat" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                        <option value="Pet shops">Pet shop & Rações</option>
+                        <option value="Banho e tosa">Banho e Tosa</option>
+                        <option value="Serviços veterinários">Serviços Veterinários & Consultas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Benefício / Desconto Oferecido *</label>
+                    <input type="text" id="inp-part-benefit" required placeholder="Ex: 15% de desconto em consultas e produtos" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">CNPJ / Documento *</label>
+                        <input type="text" id="inp-part-doc" required placeholder="00.000.000/0001-00" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-1">Telefone *</label>
+                        <input type="text" id="inp-part-phone" required placeholder="(11) 98765-4321" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 mb-1">Endereço / Cidade *</label>
+                    <input type="text" id="inp-part-address" required placeholder="Rua das Palmeiras, 45 - SP" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#b31924]">
+                </div>
+
+                <button type="submit" class="w-full bg-[#b31924] hover:bg-[#9a131b] text-white font-bold py-3 rounded-xl shadow mt-2">Cadastrar como Parceiro</button>
+            </form>
+        </div>
+
+        <!-- INFO / SUCCESS MODAL -->
+        <div id="modal-info" class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl hidden space-y-4 text-center">
+            <div id="info-icon" class="w-16 h-16 bg-red-100 text-[#b31924] rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 id="info-modal-title" class="font-extrabold text-base text-gray-900">Sucesso!</h3>
+            <p id="info-modal-text" class="text-xs text-gray-600 leading-relaxed">Operação realizada com sucesso.</p>
+            <button onclick="closeModals()" class="w-full bg-[#b31924] text-white font-bold py-2.5 rounded-xl text-xs">Entendido</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Real-time clock simulator
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('current-time').innerText = `${hours}:${minutes}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Application State (Clean & Free startup as requested)
+        let appState = {
+            user: {
+                name: "",
+                doc: "",
+                phone: "",
+                city: "",
+                address: "",
+                crmv: "",
+                photo: "",
+                role: "tutor"
+            },
+            pets: [],
+            clinics: [
+                { id: 1, name: "Hospital Veterinário Vida Pet", dist: "2,4 km", rating: "4.8", address: "Av. das Flores, 123 - SP", phone: "(11) 98765-4321", donation: true, partner: true },
+                { id: 2, name: "Clínica Patas & Cia", dist: "3,1 km", rating: "4.7", address: "Rua do Bosque, 450 - SP", phone: "(11) 97654-3210", donation: true, partner: false },
+                { id: 3, name: "VetLife Emergências", dist: "5,7 km", rating: "4.5", address: "Alameda dos Anjos, 89 - SP", phone: "(11) 96543-2109", donation: false, partner: true }
+            ],
+            partners: [
+                { id: 1, name: "Pet Love", category: "Pet shops", benefit: "10% de desconto em produtos selecionados", address: "Shopping Center - SP", phone: "(11) 91111-2222" },
+                { id: 2, name: "Banho & Tosa Feliz", category: "Banho e tosa", benefit: "15% de desconto no banho e tosa", address: "Rua Principal, 500", phone: "(11) 93333-4444" },
+                { id: 3, name: "Clínica Bem Pet", category: "Serviços veterinários", benefit: "R$ 50 de desconto em consultas", address: "Av. Brasil, 1000", phone: "(11) 95555-6666" }
+            ],
+            rewards: [
+                { id: 1, title: "Brinquedo Mordedor", category: "pets", points: 50, icon: "fa-bone", desc: "Brinquedo resistente para cães e gatos" },
+                { id: 2, title: "Petiscos Premium", category: "pets", points: 70, icon: "fa-cookie-bite", desc: "Pacote de petiscos naturais sabor carne" },
+                { id: 3, title: "Bandana Hemopet", category: "pets", points: 40, icon: "fa-vest", desc: "Bandana estilosa 'Doador Herói'" },
+                { id: 4, title: "Kit Cuidados Pet", category: "pets", points: 100, icon: "fa-kit-medical", desc: "Shampoo pet, escova e toalha compacta" }
+            ],
+            points: 0,
+            history: [],
+            alerts: [],
+            clinicFilter: 'all',
+            rewardTab: 'pets'
+        };
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            const views = ['welcome', 'home', 'pets', 'map', 'points', 'rewards', 'profile'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.add('hidden');
+            });
+
+            const target = document.getElementById(`view-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            // Update bottom nav styles
+            const navs = ['home', 'map', 'points', 'rewards', 'profile'];
+            navs.forEach(n => {
+                const btn = document.getElementById(`nav-${n}`);
+                if (btn) {
+                    if (n === tabId) {
+                        btn.classList.remove('text-gray-400');
+                        btn.classList.add('text-[#b31924]');
+                    } else {
+                        btn.classList.remove('text-[#b31924]');
+                        btn.classList.add('text-gray-400');
+                    }
+                }
+            });
+
+            renderDynamicViews();
+        }
+
+        // Modals management
+        function openModal(modalId) {
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            const modals = ['modal-role-selector', 'modal-user-edit', 'modal-pet-edit', 'modal-clinic-edit', 'modal-alert-emit', 'modal-partner-edit', 'modal-info'];
+            modals.forEach(m => document.getElementById(m).classList.add('hidden'));
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModals() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+
+        function openRoleSelectorModal() {
+            openModal('modal-role-selector');
+        }
+
+        function selectRole(role) {
+            appState.user.role = role;
+            closeModals();
+            openEditUserModal();
+        }
+
+        function openEditUserModal() {
+            const user = appState.user;
+            document.getElementById('inp-user-name').value = user.name || '';
+            document.getElementById('inp-user-doc').value = user.doc || '';
+            document.getElementById('inp-user-phone').value = user.phone || '';
+            document.getElementById('inp-user-city').value = user.city || '';
+            document.getElementById('inp-user-address').value = user.address || '';
+            document.getElementById('inp-user-photo').value = user.photo || '';
+            document.getElementById('inp-user-crmv').value = user.crmv || '';
+
+            const vetFields = document.getElementById('vet-specific-fields');
+            const title = document.getElementById('user-modal-title');
+            if (user.role === 'vet') {
+                vetFields.classList.remove('hidden');
+                title.innerText = 'Cadastro de Veterinário / Clínica';
+            } else if (user.role === 'partner') {
+                vetFields.classList.add('hidden');
+                title.innerText = 'Cadastro de Empresa Parceira';
+            } else {
+                vetFields.classList.add('hidden');
+                title.innerText = 'Cadastro de Tutor(a)';
+            }
+            openModal('modal-user-edit');
+        }
+
+        function saveUserProfile(event) {
+            event.preventDefault();
+            appState.user.name = document.getElementById('inp-user-name').value;
+            appState.user.doc = document.getElementById('inp-user-doc').value;
+            appState.user.phone = document.getElementById('inp-user-phone').value;
+            appState.user.city = document.getElementById('inp-user-city').value;
+            appState.user.address = document.getElementById('inp-user-address').value;
+            appState.user.photo = document.getElementById('inp-user-photo').value;
+            appState.user.crmv = document.getElementById('inp-user-crmv').value;
+
+            closeModals();
+            showInfoModal('Perfil Salvo!', 'Seus dados foram atualizados com sucesso no Hemopet.');
+            switchTab('home');
+        }
+
+        function openPetModal() {
+            document.getElementById('form-pet-edit').reset();
+            openModal('modal-pet-edit');
+        }
+
+        function savePetData(event) {
+            event.preventDefault();
+            const newPet = {
+                id: Date.now(),
+                name: document.getElementById('inp-pet-name').value,
+                species: document.getElementById('inp-pet-species').value,
+                breed: document.getElementById('inp-pet-breed').value,
+                age: document.getElementById('inp-pet-age').value,
+                weight: document.getElementById('inp-pet-weight').value,
+                blood: document.getElementById('inp-pet-blood').value || 'Não informado',
+                petId: document.getElementById('inp-pet-id').value || 'Geral',
+                photo: document.getElementById('inp-pet-photo').value || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400'
+            };
+            appState.pets.push(newPet);
+            closeModals();
+            showInfoModal('Pet Cadastrado!', `${newPet.name} agora faz parte do nosso banco de doadores voluntários.`);
+            switchTab('pets');
+        }
+
+        function openClinicRegisterModal() {
+            document.getElementById('form-clinic-edit').reset();
+            openModal('modal-clinic-edit');
+        }
+
+        function saveClinicData(event) {
+            event.preventDefault();
+            const newClinic = {
+                id: Date.now(),
+                name: document.getElementById('inp-clinic-name').value,
+                doc: document.getElementById('inp-clinic-doc').value,
+                phone: document.getElementById('inp-clinic-phone').value,
+                city: document.getElementById('inp-clinic-city').value,
+                dist: document.getElementById('inp-clinic-dist').value,
+                address: document.getElementById('inp-clinic-address').value,
+                rating: '5.0',
+                donation: true,
+                partner: true
+            };
+            appState.clinics.unshift(newClinic);
+            closeModals();
+            showInfoModal('Clínica Cadastrada!', 'Sua clínica foi adicionada ao mapa de parceiros com sucesso.');
+            switchTab('map');
+        }
+
+        function openAlertModal() {
+            openModal('modal-alert-emit');
+        }
+
+        function submitUrgentAlert(event) {
+            event.preventDefault();
+            const alertItem = {
+                id: Date.now(),
+                clinic: document.getElementById('inp-alert-clinic').value,
+                species: document.getElementById('inp-alert-species').value,
+                blood: document.getElementById('inp-alert-blood').value,
+                msg: document.getElementById('inp-alert-msg').value,
+                time: 'Agora mesmo'
+            };
+            appState.alerts.unshift(alertItem);
+            closeModals();
+            showInfoModal('Alerta Disparado!', 'O alerta urgente de doação foi enviado para todos os tutores cadastrados na região.');
+            switchTab('home');
+        }
+
+        function openPartnerRegisterModal() {
+            openModal('modal-partner-edit');
+        }
+
+        function savePartnerData(event) {
+            event.preventDefault();
+            const newPart = {
+                id: Date.now(),
+                name: document.getElementById('inp-part-name').value,
+                category: document.getElementById('inp-part-cat').value,
+                benefit: document.getElementById('inp-part-benefit').value,
+                address: document.getElementById('inp-part-address').value,
+                phone: document.getElementById('inp-part-phone').value
+            };
+            appState.partners.unshift(newPart);
+            closeModals();
+            showInfoModal('Parceria Ativada!', 'Sua empresa agora faz parte da rede de benefícios Hemopet.');
+            switchTab('rewards');
+        }
+
+        function showInfoModal(title, text) {
+            document.getElementById('info-modal-title').innerText = title;
+            document.getElementById('info-modal-text').innerText = text;
+            openModal('modal-info');
+        }
+
+        // Points simulation helper
+        function simulateDonationReward() {
+            appState.points += 100;
+            appState.history.unshift({
+                title: "Doação de Sangue Realizada",
+                date: new Date().toLocaleDateString('pt-BR'),
+                points: "+100 pts",
+                icon: "fa-hand-holding-droplet",
+                color: "text-red-600"
+            });
+            renderDynamicViews();
+            showInfoModal('Doação Registrada!', '+100 pontos adicionados à sua carteira por este ato de amor!');
+        }
+
+        function setClinicFilter(filter) {
+            appState.clinicFilter = filter;
+            ['all', 'donation', 'partner'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (btn) {
+                    if (f === filter) {
+                        btn.className = "px-3 py-1.5 rounded-full text-xs font-semibold bg-[#b31924] text-white whitespace-nowrap";
+                    } else {
+                        btn.className = "px-3 py-1.5 rounded-full text-xs font-semibold bg-white text-gray-600 border border-gray-200 whitespace-nowrap";
+                    }
+                }
+            });
+            renderClinics();
+        }
+
+        function setRewardTab(tab) {
+            appState.rewardTab = tab;
+            const tabs = ['pets', 'discounts', 'partners-list'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-rew-${t === 'partners-list' ? 'partners' : t}`);
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-[#b31924] text-white";
+                    } else {
+                        btn.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-white text-gray-600 border border-gray-200";
+                    }
+                }
+            });
+            renderRewards();
+        }
+
+        // Render Dynamic UI components
+        function renderDynamicViews() {
+            // User profile UI updates
+            const user = appState.user;
+            if (user.name) {
+                document.getElementById('welcome-user-name').innerText = `Olá, ${user.name}!`;
+                document.getElementById('profile-name-text').innerText = user.name;
+                document.getElementById('profile-location-text').innerHTML = `<i class="fa-solid fa-location-dot mr-1"></i> ${user.city || 'Localidade não informada'}`;
+                document.getElementById('tutor-display-name').innerText = user.name;
+                document.getElementById('tutor-display-location').innerText = user.city || user.address || 'Cadastrado no Hemopet';
+                
+                let roleLabel = "Tutor(a) de Pet";
+                if (user.role === 'vet') roleLabel = `Veterinário(a) - CRMV: ${user.crmv || 'Cadastrado'}`;
+                if (user.role === 'partner') roleLabel = "Empresa Parceira";
+                document.getElementById('profile-role-text').innerText = roleLabel;
+
+                if (user.photo) {
+                    document.getElementById('profile-avatar-box').innerHTML = `<img src="${user.photo}" class="w-full h-full object-cover">`;
+                    document.getElementById('tutor-avatar-mini').innerHTML = `<img src="${user.photo}" class="w-full h-full object-cover">`;
+                }
+            }
+
+            // Alerts bell badge
+            const alertBadge = document.getElementById('alert-badge');
+            const alertCountBadge = document.getElementById('alerts-count-badge');
+            if (appState.alerts.length > 0) {
+                alertBadge.innerText = appState.alerts.length;
+                alertBadge.classList.remove('hidden');
+                alertCountBadge.innerText = `${appState.alerts.length} ativo(s)`;
+            } else {
+                alertBadge.classList.add('hidden');
+                alertCountBadge.innerText = `0 clínicos`;
+            }
+
+            renderHomeAlerts();
+            renderPetsList();
+            renderClinics();
+            renderPointsWallet();
+            renderRewards();
+        }
+
+        function renderHomeAlerts() {
+            const container = document.getElementById('home-alerts-container');
+            if (!container) return;
+            if (appState.alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 text-gray-400 text-xs">
+                        <i class="fa-solid fa-circle-check text-2xl mb-1 text-green-500 opacity-80"></i>
+                        <p>Nenhum alerta urgente no momento.</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = appState.alerts.map(a => `
+                <div class="bg-red-50 border border-red-200 rounded-xl p-3 text-xs space-y-1">
+                    <div class="flex justify-between items-center font-bold text-red-900">
+                        <span><i class="fa-solid fa-hospital mr-1"></i> ${a.clinic}</span>
+                        <span class="text-[10px] bg-red-200 text-red-800 px-2 py-0.5 rounded-full">${a.blood}</span>
+                    </div>
+                    <p class="text-gray-700">${a.msg}</p>
+                    <div class="flex justify-between items-center text-[10px] text-gray-500 pt-1">
+                        <span>Necessidade: ${a.species}</span>
+                        <span class="font-semibold text-red-600">${a.time}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPetsList() {
+            const homeContainer = document.getElementById('home-pets-container');
+            const petsContainer = document.getElementById('pets-list-container');
+            
+            if (appState.pets.length === 0) {
+                if (homeContainer) {
+                    homeContainer.innerHTML = `
+                        <div class="text-center py-6 text-gray-400 text-xs">
+                            <p>Nenhum pet cadastrado ainda.</p>
+                            <button onclick="switchTab('pets')" class="mt-2 text-xs font-bold text-[#b31924] bg-red-50 px-3 py-1.5 rounded-xl border border-red-100">Cadastrar Primeiro Pet</button>
+                        </div>
+                    `;
+                }
+                if (petsContainer) {
+                    petsContainer.innerHTML = `
+                        <div class="bg-white rounded-2xl p-6 text-center border border-gray-100 shadow-sm space-y-3">
+                            <div class="w-12 h-12 bg-red-50 text-[#b31924] rounded-full flex items-center justify-center mx-auto text-xl">
+                                <i class="fa-solid fa-paw"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-gray-800">Nenhum animal doador cadastrado</h4>
+                            <p class="text-xs text-gray-500">Cadastre seu cão ou gato para participar da rede de doadores voluntários do Hemopet.</p>
+                            <button onclick="openPetModal()" class="bg-[#b31924] text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow">Cadastrar Pet Agora</button>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            const petsHTML = appState.pets.map(p => `
+                <div class="bg-white rounded-2xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3">
+                    <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-red-100">
+                        <img src="${p.photo}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100/fdf2f2/b31924?text=Pet'">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-sm text-gray-900 truncate">${p.name}</h4>
+                            <span class="text-[10px] font-extrabold bg-red-100 text-[#b31924] px-2 py-0.5 rounded-full">${p.species}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 truncate">Raça: ${p.breed} • ${p.age} • ${p.weight}</p>
+                        <p class="text-[11px] text-red-600 font-semibold mt-0.5">Tipo Sanguíneo: ${p.blood}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            if (homeContainer) homeContainer.innerHTML = petsHTML;
+            if (petsContainer) petsContainer.innerHTML = petsHTML;
+        }
+
+        function renderClinics() {
+            const container = document.getElementById('clinics-list-container');
+            if (!container) return;
+
+            let filtered = appState.clinics;
+            if (appState.clinicFilter === 'donation') {
+                filtered = appState.clinics.filter(c => c.donation);
+            } else if (appState.clinicFilter === 'partner') {
+                filtered = appState.clinics.filter(c => c.partner);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-gray-400 text-xs">Nenhuma clínica encontrada nesta categoria.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(c => `
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-2 text-xs">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-900">${c.name}</h4>
+                            <p class="text-gray-500 text-[11px]"><i class="fa-solid fa-location-dot mr-1 text-red-500"></i> ${c.address} (${c.dist})</p>
+                        </div>
+                        <span class="bg-amber-100 text-amber-800 font-bold px-2 py-1 rounded-lg text-[10px] flex items-center">
+                            <i class="fa-solid fa-star text-amber-500 mr-1"></i> ${c.rating}
+                        </span>
+                    </div>
+                    <div class="flex space-x-2 pt-2 border-t border-gray-100">
+                        <button onclick="showInfoModal('Rota para ${c.name}', 'Abrindo rota GPS para ${c.address}...')" class="flex-1 bg-red-50 hover:bg-red-100 text-[#b31924] font-bold py-2 rounded-xl text-center transition">
+                            <i class="fa-solid fa-diamond-turn-right mr-1"></i> Ver Rota
+                        </button>
+                        <button onclick="showInfoModal('Contato ${c.name}', 'Ligue para: ${c.phone}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 rounded-xl text-center transition">
+                            <i class="fa-solid fa-phone mr-1"></i> Ligar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPointsWallet() {
+            document.getElementById('user-points-total').innerText = appState.points;
+            
+            // Level logic
+            let levelName = "Iniciante";
+            let nextTarget = 100;
+            let progress = (appState.points / 100) * 100;
+
+            if (appState.points >= 200) {
+                levelName = "Pet Herói 👑";
+                nextTarget = 500;
+                progress = 100;
+                document.getElementById('badge-heroi').classList.remove('opacity-40');
+            } else if (appState.points >= 50) {
+                levelName = "Amigo Solidário ❤️";
+                nextTarget = 200;
+                progress = (appState.points / 200) * 100;
+                document.getElementById('badge-solidario').classList.remove('opacity-40');
+            }
+
+            if (appState.points > 0) {
+                document.getElementById('badge-doador').classList.remove('opacity-40');
+            }
+
+            document.getElementById('user-level-name').innerText = levelName;
+            document.getElementById('next-level-target').innerText = `Próx nível: ${nextTarget} pts`;
+            document.getElementById('points-progress-bar').style.width = `${Math.min(progress, 100)}%`;
+
+            // History render
+            const histContainer = document.getElementById('points-history-container');
+            if (appState.history.length === 0) {
+                histContainer.innerHTML = `
+                    <div class="text-center py-6 text-gray-400 text-xs">
+                        <p>Nenhuma doação registrada ainda.</p>
+                        <p class="text-[10px] text-gray-400 mt-1">Simule uma doação acima para testar os pontos!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            histContainer.innerHTML = appState.history.map(h => `
+                <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl text-xs">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-full bg-red-100 text-[#b31924] flex items-center justify-center">
+                            <i class="fa-solid ${h.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">${h.title}</p>
+                            <p class="text-[10px] text-gray-400">${h.date}</p>
+                        </div>
+                    </div>
+                    <span class="font-black text-red-600">${h.points}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderRewards() {
+            const gridContainer = document.getElementById('rewards-grid-container');
+            const partnersContainer = document.getElementById('partners-list-container');
+
+            if (appState.rewardTab === 'partners-list') {
+                gridContainer.classList.add('hidden');
+                partnersContainer.classList.remove('hidden');
+                
+                if (appState.partners.length === 0) {
+                    partnersContainer.innerHTML = `<div class="text-center py-6 text-gray-400 text-xs">Nenhum parceiro cadastrado.</div>`;
+                    return;
+                }
+
+                partnersContainer.innerHTML = appState.partners.map(p => `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-sm text-gray-900">${p.name}</h4>
+                            <span class="bg-red-50 text-[#b31924] text-[10px] font-bold px-2 py-0.5 rounded-full">${p.category}</span>
+                        </div>
+                        <p class="text-gray-700 font-semibold"><i class="fa-solid fa-tag text-red-500 mr-1"></i> ${p.benefit}</p>
+                        <p class="text-gray-500 text-[11px]"><i class="fa-solid fa-location-dot mr-1"></i> ${p.address} • Tel: ${p.phone}</p>
+                    </div>
+                `).join('');
+                return;
+            }
+
+            partnersContainer.classList.add('hidden');
+            gridContainer.classList.remove('hidden');
+
+            const filteredRewards = appState.rewards.filter(r => {
+                if (appState.rewardTab === 'pets') return r.category === 'pets';
+                return true;
+            });
+
+            gridContainer.innerHTML = filteredRewards.map(r => `
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-red-50 text-[#b31924] flex items-center justify-center mb-3">
+                            <i class="fa-solid ${r.icon} text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-sm">${r.title}</h4>
+                        <p class="text-[11px] text-gray-500 mt-1">${r.desc}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <span class="font-extrabold text-[#b31924]">${r.points} pts</span>
+                        <button onclick="redeemReward('${r.title}', ${r.points})" class="bg-[#b31924] hover:bg-[#9a131b] text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition">Resgatar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function redeemReward(title, pointsNeeded) {
+            if (appState.points >= pointsNeeded) {
+                appState.points -= pointsNeeded;
+                showInfoModal('Resgate Solicitado!', `Parabéns! Você resgatou com sucesso: "${title}". Apresente seu comprovante na clínica ou parceiro.`);
+                renderPointsWallet();
+            } else {
+                showInfoModal('Pontos Insuficientes', `Você precisa de mais ${pointsNeeded - appState.points} pontos para resgatar este item. Simule novas doações na aba Pontos!`);
+            }
+        }
+
+        // Initialize App View on Load
+        window.onload = function() {
+            switchTab('welcome');
+        };
+    </script>
+</body>
+</html>
